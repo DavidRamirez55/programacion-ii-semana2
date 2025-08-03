@@ -2,68 +2,64 @@ import java.util.Scanner;
 
 public class notasestudiantes {
 
-    // Función que calcula el promedio de 3 notas
-    public static double calcularPromedio(double n1, double n2, double n3) {
-        return (n1 + n2 + n3) / 3;
+    // Método para obtener el promedio de tres calificaciones
+    public static double obtenerPromedio(double[] notas) {
+        double suma = 0;
+        for (double nota : notas) {
+            suma += nota;
+        }
+        return suma / notas.length;
     }
 
-    // Función booleana que determina si el estudiante aprueba
-    public static boolean estaAprobado(double promedio) {
-        return promedio >= 61;
+    // Verifica si un estudiante aprueba con el promedio dado
+    public static String verificarEstado(double promedio) {
+        return promedio >= 61 ? "Aprobado" : "Reprobado";
     }
 
-    // Procedimiento para mostrar el resumen de los estudiantes
-    public static void mostrarResumen(String[] nombres, double[] promedios, String[] estados, int cantidad) {
-        System.out.println("\nResumen de estudiantes:");
-        System.out.println("------------------------");
-        for (int i = 0; i < cantidad; i++) {
-            System.out.printf("Nombre: %-10s Promedio: %.2f     Estado: %s\n",
-                    nombres[i], promedios[i], estados[i]);
+    // Imprime los resultados finales
+    public static void imprimirResultados(String[] estudiantes, double[] promedios, String[] resultados) {
+        System.out.println("\n--- Resultados Finales ---");
+        for (int i = 0; i < estudiantes.length; i++) {
+            System.out.printf("Estudiante: %-12s | Promedio: %.2f | Estado: %s\n",
+                    estudiantes[i], promedios[i], resultados[i]);
         }
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        final int MAX_ESTUDIANTES = 5;
+        Scanner entrada = new Scanner(System.in);
+        final int LIMITE = 5;
 
-        System.out.print("¿Cuántos estudiantes desea ingresar? (Máximo 5): ");
-        int cantidadEstudiantes = scanner.nextInt();
-        scanner.nextLine(); // 🔧 Esta línea limpia el salto de línea pendiente
+        System.out.print("Ingrese la cantidad de estudiantes (1 a 5): ");
+        int total = entrada.nextInt();
+        entrada.nextLine(); // limpiar buffer
 
-        // Validar que no se exceda el límite
-        if (cantidadEstudiantes < 1 || cantidadEstudiantes > MAX_ESTUDIANTES) {
-            System.out.println("Cantidad inválida. Debe ser entre 1 y 5.");
+        if (total < 1 || total > LIMITE) {
+            System.out.println("Número no permitido. Intente de nuevo con un valor entre 1 y 5.");
             return;
         }
 
-        // Arreglos para guardar la información
-        String[] nombres = new String[cantidadEstudiantes];
-        double[] promedios = new double[cantidadEstudiantes];
-        String[] estados = new String[cantidadEstudiantes];
+        String[] alumnos = new String[total];
+        double[] medias = new double[total];
+        String[] estadoFinal = new String[total];
 
-        // Recolección de datos
-        for (int i = 0; i < cantidadEstudiantes; i++) {
-            System.out.print("\nIngrese el nombre del estudiante #" + (i + 1) + ": ");
-            nombres[i] = scanner.nextLine();
+        for (int i = 0; i < total; i++) {
+            System.out.println("\nEstudiante #" + (i + 1));
+            System.out.print("Nombre: ");
+            alumnos[i] = entrada.nextLine();
 
-            System.out.print("Ingrese la primera nota: ");
-            double nota1 = scanner.nextDouble();
-            System.out.print("Ingrese la segunda nota: ");
-            double nota2 = scanner.nextDouble();
-            System.out.print("Ingrese la tercera nota: ");
-            double nota3 = scanner.nextDouble();
-            scanner.nextLine(); // 🔧 Limpia el buffer para evitar errores al pedir el próximo nombre
+            double[] notas = new double[3];
+            for (int j = 0; j < 3; j++) {
+                System.out.print("Nota " + (j + 1) + ": ");
+                notas[j] = entrada.nextDouble();
+            }
+            entrada.nextLine(); // limpiar salto de línea
 
-            double promedio = calcularPromedio(nota1, nota2, nota3);
-            boolean aprobado = estaAprobado(promedio);
-
-            promedios[i] = promedio;
-            estados[i] = aprobado ? "Aprobado" : "Reprobado";
+            double promedioActual = obtenerPromedio(notas);
+            medias[i] = promedioActual;
+            estadoFinal[i] = verificarEstado(promedioActual);
         }
 
-        // Mostrar el resumen
-        mostrarResumen(nombres, promedios, estados, cantidadEstudiantes);
-
-        scanner.close();
+        imprimirResultados(alumnos, medias, estadoFinal);
+        entrada.close();
     }
 }
